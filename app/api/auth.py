@@ -8,6 +8,8 @@ from app.services.auth_service import hash_password
 from app.schemas.token import Token
 from app.services.auth_service import hash_password, verify_password
 from app.core.security import create_access_token
+from fastapi.security import OAuth2PasswordBearer
+from app.core.security import oauth2_scheme, verify_token
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -58,4 +60,17 @@ def login(username: str, password: str, db: Session = Depends(get_db)):
     return {
         "access_token": token,
         "token_type": "bearer"
+    }
+
+def get_current_user(token: str = Depends(oauth2_scheme)):
+
+    username = verify_token(token)
+
+    return username
+
+@router.get("/me")
+def get_me(current_user: str = Depends(get_current_user)):
+
+    return {
+        "username": current_user
     }
