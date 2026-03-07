@@ -4,7 +4,10 @@ from app.db.session import engine
 
 from app.db.base import Base
 from app.models.user import User
+from app.models.item import Item
+
 from app.api import auth
+from app.api import items
 
 
 
@@ -17,6 +20,7 @@ app = FastAPI(
 
 app.include_router(health.router)
 app.include_router(auth.router)
+app.include_router(items.router)
 
 @app.get("/")
 def root():
