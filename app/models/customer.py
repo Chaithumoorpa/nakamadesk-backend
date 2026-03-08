@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime
-from datetime import datetime
+from datetime import datetime, timezone
 from app.db.base import Base
 
 class Customer(Base):
@@ -9,4 +9,4 @@ class Customer(Base):
     name = Column(String, nullable=False)
     phone = Column(String)
     address = Column(String)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
