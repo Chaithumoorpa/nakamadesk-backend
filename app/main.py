@@ -11,6 +11,7 @@ from app.models.sale_item import SaleItem
 from app.api import auth
 from app.api import items
 from app.api import sales
+from app.api import reports
 
 
 
@@ -25,6 +26,7 @@ app.include_router(health.router)
 app.include_router(auth.router)
 app.include_router(items.router)
 app.include_router(sales.router)
+app.include_router(reports.router)
 
 @app.get("/")
 def root():
