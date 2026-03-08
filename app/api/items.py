@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from app.db.session import SessionLocal
 from app.models.item import Item
 from app.schemas.item import ItemCreate, ItemResponse
 from app.schemas.stock import StockUpdate
-from app.api.auth import get_db, get_current_user
+from app.db.deps import get_db
+from app.api.auth import get_current_user
 
 router = APIRouter(prefix="/items", tags=["Items"])
 

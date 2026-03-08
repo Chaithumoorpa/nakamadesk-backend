@@ -3,11 +3,11 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from datetime import datetime, date
 
-from app.db.session import SessionLocal
 from app.models.sale import Sale
 from app.models.sale_item import SaleItem
 from app.models.item import Item
-from app.api.auth import get_db, get_current_user
+from app.db.deps import get_db
+from app.api.auth import get_current_user
 
 router = APIRouter(prefix="/reports", tags=["Reports"])
 
