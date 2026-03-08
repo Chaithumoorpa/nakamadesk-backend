@@ -83,9 +83,16 @@ def adjust_stock(
     item = db.query(Item).filter(Item.id == item_id).first()
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
-    
-    item.stock_quantity = (item.stock_quantity or 0) + stock_update.quantity
-    
+
+    new_stock = (item.stock_quantity or 0) + stock_update.quantity
+    if new_stock < 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Stock cannot go below zero"
+        )
+
+    item.stock_quantity = new_stock
+
     db.commit()
     db.refresh(item)
     return item
