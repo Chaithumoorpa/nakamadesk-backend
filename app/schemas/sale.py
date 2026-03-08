@@ -14,6 +14,10 @@ class SaleItemResponse(BaseModel):
     item_id: int
     quantity: int
     price_at_sale: float
+    gst_percent: float = 0.0
+    cgst_amount: float = 0.0
+    sgst_amount: float = 0.0
+    total_price: float = 0.0
 
     class Config:
         from_attributes = True

@@ -42,15 +42,27 @@ def create_sale(
             raise HTTPException(status_code=400, detail=f"Insufficient stock for item '{item.name}'")
         
         item.stock_quantity = current_stock - item_data.quantity
-        
+
         price_at_sale = item.price or 0.0
-        total_amount += price_at_sale * item_data.quantity
+        gst_percent = item.gst_percent or 0.0
+
+        base_price = price_at_sale * item_data.quantity
+        gst_amount = base_price * (gst_percent / 100)
+        cgst_amount = gst_amount / 2
+        sgst_amount = gst_amount / 2
+        line_total = base_price + gst_amount
+
+        total_amount += line_total
         
         sale_item = SaleItem(
             sale_id=new_sale.id,
             item_id=item.id,
             quantity=item_data.quantity,
-            price_at_sale=price_at_sale
+            price_at_sale=price_at_sale,
+            gst_percent=gst_percent,
+            cgst_amount=cgst_amount,
+            sgst_amount=sgst_amount,
+            total_price=line_total
         )
         db.add(sale_item)
     
