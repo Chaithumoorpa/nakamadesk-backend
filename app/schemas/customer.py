@@ -1,11 +1,14 @@
-from pydantic import BaseModel
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel
+
 
 class CustomerCreate(BaseModel):
     name: str
     phone: Optional[str] = None
     address: Optional[str] = None
+
 
 class CustomerResponse(BaseModel):
     id: int

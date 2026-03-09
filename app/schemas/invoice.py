@@ -1,7 +1,10 @@
-from pydantic import BaseModel
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
+
+from pydantic import BaseModel
+
 from app.schemas.customer import CustomerResponse
+
 
 class InvoiceItemResponse(BaseModel):
     item_id: int
@@ -15,6 +18,7 @@ class InvoiceItemResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class InvoiceResponse(BaseModel):
     id: int

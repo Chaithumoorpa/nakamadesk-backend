@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, Float, ForeignKey
+from sqlalchemy import Column, Float, ForeignKey, Integer
 from sqlalchemy.orm import relationship
+
 from app.db.base import Base
+
 
 class SaleItem(Base):
     __tablename__ = "sale_items"
