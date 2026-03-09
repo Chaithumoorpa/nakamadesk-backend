@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from datetime import datetime
 
 class SaleItemCreate(BaseModel):
@@ -8,6 +8,7 @@ class SaleItemCreate(BaseModel):
 
 class SaleCreate(BaseModel):
     items: List[SaleItemCreate]
+    customer_id: Optional[int] = None
 
 class SaleItemResponse(BaseModel):
     id: int
@@ -26,6 +27,9 @@ class SaleResponse(BaseModel):
     id: int
     total_amount: float
     created_at: datetime
+    customer_id: Optional[int] = None
+    invoice_number: Optional[str] = None
+    invoice_date: Optional[datetime] = None
     items: List[SaleItemResponse] = []
 
     class Config:
