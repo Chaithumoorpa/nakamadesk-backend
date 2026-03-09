@@ -8,13 +8,11 @@ from app.db.base import Base
 from app.db.deps import get_db
 from app.main import app
 from app.models.user import User
+from app.core.config import settings
 
-# SQLite test database
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+# Test against the configured DB URL
+SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base.metadata.create_all(bind=engine)
@@ -40,10 +38,21 @@ client = TestClient(app)
 
 @pytest.fixture(autouse=True)
 def setup_db():
-    Base.metadata.drop_all(bind=engine)
+    from sqlalchemy import text
+    # SQLAlchemy 2.0 requires text() and connections for raw SQL execution
+    try:
+        with engine.begin() as conn:
+            conn.execute(text("DROP SCHEMA public CASCADE; CREATE SCHEMA public;"))
+    except Exception:
+        Base.metadata.drop_all(bind=engine)
+        
     Base.metadata.create_all(bind=engine)
     yield
-    Base.metadata.drop_all(bind=engine)
+    try:
+        with engine.begin() as conn:
+            conn.execute(text("DROP SCHEMA public CASCADE; CREATE SCHEMA public;"))
+    except Exception:
+        Base.metadata.drop_all(bind=engine)
 
 
 def test_invoice_generation_flow():
