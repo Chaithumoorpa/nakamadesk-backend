@@ -8,6 +8,7 @@ from app.models.item import Item
 from app.schemas.sale import SaleCreate, SaleResponse
 from app.db.deps import get_db
 from app.api.auth import get_current_user
+from app.services.invoice_service import generate_invoice_number
 
 router = APIRouter(prefix="/sales", tags=["Sales"])
 
@@ -22,7 +23,11 @@ def create_sale(
 
     total_amount = 0.0
     
-    new_sale = Sale(total_amount=0.0)
+    new_sale = Sale(
+        total_amount=0.0,
+        invoice_number=generate_invoice_number(db),
+        customer_id=sale_data.customer_id
+    )
     db.add(new_sale)
     db.flush()
 
