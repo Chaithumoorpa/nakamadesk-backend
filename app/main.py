@@ -14,6 +14,7 @@ from app.api import items
 from app.api import sales
 from app.api import reports
 from app.api import customers
+from app.api import invoices
 
 
 
@@ -30,6 +31,7 @@ app.include_router(items.router)
 app.include_router(sales.router)
 app.include_router(reports.router)
 app.include_router(customers.router)
+app.include_router(invoices.router)
 
 @app.get("/")
 def root():
