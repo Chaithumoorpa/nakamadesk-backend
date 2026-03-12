@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 
 from app.api.auth import get_current_user
 from app.db.deps import get_db
-from app.schemas.sale import SaleCreate, SaleResponse
+from app.models.sale_item import SaleItem
+from app.schemas.sale import SaleCreate, SaleItemResponse, SaleResponse
 from app.services.sales_service import (create_sale_transaction, get_all_sales,
                                         get_sale_by_id)
 
@@ -25,10 +26,14 @@ def create_sale(
 def get_sales(
     limit: int = Query(50, ge=1, le=100),
     offset: int = Query(0, ge=0),
+    customer_id: int = None,
+    date: str = None,
     current_user: str = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return get_all_sales(db, limit, offset)
+    return get_all_sales(
+        db, limit=limit, offset=offset, customer_id=customer_id, date=date
+    )
 
 
 @router.get("/{sale_id}", response_model=SaleResponse)
@@ -41,3 +46,13 @@ def get_sale(
     if not sale:
         raise HTTPException(status_code=404, detail="Sale not found")
     return sale
+
+
+@router.get("/{sale_id}/items", response_model=List[SaleItemResponse])
+def get_sale_items(
+    sale_id: int,
+    current_user: str = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    items = db.query(SaleItem).filter(SaleItem.sale_id == sale_id).all()
+    return items

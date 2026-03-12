@@ -103,15 +103,32 @@ def create_sale_transaction(
     return new_sale
 
 
-def get_all_sales(db: Session, limit: int = 50, offset: int = 0) -> List[Sale]:
-    """Retrieve paginated sales with eager loading of items."""
-    sales = (
-        db.query(Sale)
-        .options(joinedload(Sale.items).joinedload(SaleItem.item))
-        .limit(limit)
-        .offset(offset)
-        .all()
-    )
+def get_all_sales(
+    db: Session, 
+    limit: int = 50, 
+    offset: int = 0, 
+    customer_id: Optional[int] = None, 
+    date: Optional[str] = None
+) -> List[Sale]:
+    """Retrieve paginated sales with optional filtering and eager loading of items."""
+    query = db.query(Sale).options(joinedload(Sale.items).joinedload(SaleItem.item))
+    
+    if customer_id:
+        query = query.filter(Sale.customer_id == customer_id)
+    
+    if date:
+        from datetime import datetime
+        from sqlalchemy import func
+        try:
+            target_date = datetime.strptime(date, "%Y-%m-%d").date()
+            query = query.filter(func.date(Sale.created_at) == target_date)
+        except ValueError:
+            # Note: We might want to handle this differently in a service, 
+            # but for now we follow the existing pattern of raising in the route if needed.
+            # Here we just pass it along or ignore invalid dates.
+            pass
+
+    sales = query.limit(limit).offset(offset).all()
     return sales
 
 
