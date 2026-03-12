@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.api import auth, customers, health, invoices, items, reports, sales
+from app.api import auth, customers, dashboard, health, invoices, items, reports, sales
 from app.db.base import Base
 from app.db.session import engine
 from app.models.customer import Customer
@@ -20,6 +20,7 @@ app.include_router(sales.router)
 app.include_router(reports.router)
 app.include_router(customers.router)
 app.include_router(invoices.router)
+app.include_router(dashboard.router)
 
 
 @app.get("/")
