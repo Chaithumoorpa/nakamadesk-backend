@@ -23,6 +23,16 @@ def create_customer(
     db.refresh(new_customer)
     return new_customer
 
+@router.get("/search", response_model=CustomerResponse)
+def search_customer_by_phone(
+    phone: str,
+    current_user: str = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    customer = db.query(Customer).filter(Customer.phone == phone).first()
+    if not customer:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    return customer
 
 @router.get("/", response_model=List[CustomerResponse])
 def get_customers(
